@@ -36,6 +36,9 @@ from telethon import TelegramClient, sync, events
 
 import requests
 
+#import for totp
+import pyotp
+
 #SETTING UP TELEGRAM BOT
 def telegram(message):
     bot_token = '?'
@@ -45,7 +48,6 @@ def telegram(message):
     response = requests.get(send_text)
     
     return response.json()
-
 
 
 ###############################################################################
@@ -135,8 +137,8 @@ telegram("started zerodha ")
 
 KITE_USERNAME=""
 KITE_PASSWORD=""
-KITE_PIN=""
-
+#KITE_PIN=""
+TOTP_COUPON=""
 CDSL_PIN=""
 
 WEB_DRIVER_LOCATION = r"C:\Users\amrit\Downloads\Compressed\chromedriver_win32\chromedriver.exe"
@@ -165,8 +167,17 @@ driver.implicitly_wait(60)
 time.sleep(2)
 
 # entering security pin
-driver.find_element_by_xpath("/html/body/div[1]/div/div/div[1]/div/div/div/form/div[2]/div/input").send_keys(KITE_PIN)
-driver.find_element_by_xpath("/html/body/div[1]/div/div/div[1]/div/div/div/form/div[3]/button").click()
+#GET TOTP
+time.sleep(2)
+totp = pyotp.TOTP(TOTP_COUPON)
+KITE_PIN=totp.now()
+driver.find_element_by_xpath("/html/body/div[1]/div/div/div[1]/div/div/div/form/div[2]/input").send_keys(KITE_PIN)
+#driver.find_element_by_id('pin').send_keys(KITE_PIN)
+driver.find_element_by_class_name("button-orange").click()
+
+
+#driver.find_element_by_xpath("/html/body/div[1]/div/div/div[1]/div/div/div/form/div[2]/div/input").send_keys(KITE_PIN)
+#driver.find_element_by_xpath("/html/body/div[1]/div/div/div[1]/div/div/div/form/div[3]/button").click()
 
 driver.implicitly_wait(60)
 time.sleep(2)
